@@ -1,33 +1,37 @@
-package com.example.sirdiapp;
+package com.example.sirdiapp.Authentication;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
+import com.example.sirdiapp.MainActivity;
+import com.example.sirdiapp.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.Objects;
+
 public class LoginActivity extends AppCompatActivity{
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthList;
 
-    private TextInputLayout emailf,passf;
+    private TextInputLayout emailf;
+    private TextInputLayout passf;
 
     private long backpressedtime;
     private Toast backtoast;
-
-    ProgressBar login_probar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +40,6 @@ public class LoginActivity extends AppCompatActivity{
 
         emailf=findViewById(R.id.email_enter);
         passf=findViewById(R.id.pass_enter);
-        login_probar=findViewById(R.id.login_progress);
 
         mAuth = FirebaseAuth.getInstance();
         mAuthList = new FirebaseAuth.AuthStateListener() {
@@ -59,6 +62,7 @@ public class LoginActivity extends AppCompatActivity{
         mAuth.addAuthStateListener(mAuthList);
     }
 
+    //on pressing back in this activity
     @Override
     public void onBackPressed() {
         if(backpressedtime+2000>System.currentTimeMillis()){
@@ -80,9 +84,10 @@ public class LoginActivity extends AppCompatActivity{
     }
 
     public void login_clicked(View View){
-        String email = emailf.getEditText().getText().toString().trim();
-        String pass = passf.getEditText().getText().toString().trim();
+        String email = Objects.requireNonNull(emailf.getEditText()).getText().toString().trim();
+        String pass = Objects.requireNonNull(passf.getEditText()).getText().toString().trim();
 
+        //checking for validation
         if(email.isEmpty()){
             YoYo.with(Techniques.Shake)
                     .duration(500)
@@ -121,22 +126,28 @@ public class LoginActivity extends AppCompatActivity{
             return;
         }
 
-        login_probar.setVisibility(android.view.View.VISIBLE);
-        login_probar.setProgress(50);
+        final ProgressDialog dialog;
+        dialog =new ProgressDialog(LoginActivity.this,R.style.AppCompatAlertDialogStyle);
+        dialog.setTitle("Please Wait");
+        dialog.setMessage("Authenticating...");
+        dialog.show();
 
         mAuth.signInWithEmailAndPassword(email,pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                login_probar.setProgress(80);
-                if(task.isSuccessful()){
-                    login_probar.setVisibility(android.view.View.GONE);
 
+                //check for task successful
+                if(task.isSuccessful()){
+                    //if success
+                    dialog.dismiss();
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                     finish();
                 } else{
-                    Toast.makeText(LoginActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    //if failed error message
+                    dialog.dismiss();
+                    Toast.makeText(LoginActivity.this, Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });

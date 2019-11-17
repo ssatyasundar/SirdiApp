@@ -6,32 +6,38 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/drawer_home"
-            android:icon="@drawable/home"
+            android:icon="@drawable/home_icon"
             android:title="Home" />
-        <item
-            android:id="@+id/drawer_Profile"
-            android:icon="@drawable/person"
-            android:title="Profile" />
+
         <item
             android:id="@+id/drawer_notification"
-            android:icon="@drawable/notifications"
+            android:icon="@drawable/notifications_icon"
             android:title="Notification" />
+
         <item
             android:id="@+id/drawer_setting"
-            android:icon="@drawable/settings"
+            android:icon="@drawable/settings_icon"
             android:title="Settings" />
+
+        <item
+            android:id="@+id/drawer_dummy"
+            android:visible="false"/>
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="Options">
         <menu>
             <item
-                android:id="@+id/drawer_contact"
-                android:icon="@drawable/call"
-                android:title="Contact Us" />
+                android:id="@+id/drawer_signout"
+                android:icon="@drawable/signout_icon"
+                android:title="Sign Out" />
             <item
-                android:id="@+id/drawer_share"
-                android:icon="@drawable/share"
-                android:title="Share the App" />
+                android:id="@+id/drawer_help"
+                android:icon="@drawable/help_icon"
+                android:title="Help" />
+            <item
+                android:id="@+id/drawer_contact"
+                android:icon="@drawable/call_icon"
+                android:title="Contact Us" />
         </menu>
     </item>
 
@@ -40,9 +46,11 @@
             <item
                 android:id="@+id/drawer_terms"
                 android:title="Terms and Conditions" />
+
             <item
                 android:id="@+id/drawer_feedback"
                 android:title="Feedback" />
+
             <item
                 android:id="@+id/drawer_about"
                 android:title="About Sirdi" />
